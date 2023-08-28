@@ -232,7 +232,7 @@ while true do
 
     data = "Level: " .. LocalPlayer.Data.Level.Value
 
-	if CheckDone(TypeDone) then
+    if CheckDone(TypeDone) then
         if TypeDone == 'MELEE' then
             data = data .. ' - Info: Melee'
         elseif TypeDone == 'GOD' then
