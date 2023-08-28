@@ -219,6 +219,8 @@ while isfile(fileName) do
     task.wait(3)
 end
 
+local data
+
 while true do
     local Code = game:GetService'GuiService':GetErrorCode().Value
 
@@ -228,25 +230,25 @@ while true do
         end
     end
 
+    data = "Level: " .. LocalPlayer.Data.Level.Value
+
 	if CheckDone(TypeDone) then
+        if TypeDone == 'MELEE' then
+            data = data .. ' - Info: Melee'
+        elseif TypeDone == 'GOD' then
+            data = data .. ' - Info: Godhuman'
+        elseif TypeDone == 'CDK' then
+            data = data .. ' - Info: Godhuman|CDK'
+        elseif TypeDone == 'CDKSG' then
+            data = data .. ' - Info: Godhuman|CDK|SG'
+        end
+
         break
     end
 
-    WriteData("", "Level: " .. LocalPlayer.Data.Level.Value)
+    WriteData("", data)
 
     task.wait(60)
-end
-
-local data = "Level: " .. LocalPlayer.Data.Level.Value
-
-if TypeDone == 'MELEE' then
-    data = data .. ' - Info: Melee'
-elseif TypeDone == 'GOD' then
-    data = data .. ' - Info: Godhuman'
-elseif TypeDone == 'CDK' then
-    data = data .. ' - Info: Godhuman|CDK'
-elseif TypeDone == 'CDKSG' then
-    data = data .. ' - Info: Godhuman|CDK|SG'
 end
 
 WriteData("Completed", data .. checkMochi() .. checkLeopardI() .. checkLeopardU())
