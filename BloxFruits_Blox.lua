@@ -113,7 +113,7 @@ end
 function CheckDone(Type)
     local level = LocalPlayer.Data.Level.Value
 
-	if (Type == "1K" and level > 1000) or (Type == "1K5" and level > 1500) then
+    if (Type == "1K" and level > 1000) or (Type == "1K5" and level > 1500) then
 		return true
     elseif level >= 2450 then
         if Type == "MELEE" then
@@ -126,7 +126,7 @@ function CheckDone(Type)
             return true
         end
     end
-	
+    
 	return false
 end
 
