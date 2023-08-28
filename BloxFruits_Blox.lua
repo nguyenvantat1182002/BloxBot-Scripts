@@ -114,7 +114,7 @@ function CheckDone(Type)
     local level = LocalPlayer.Data.Level.Value
 
     if (Type == "1K" and level > 1000) or (Type == "1K5" and level > 1500) then
-		return true
+        return true
     elseif level >= 2450 then
         if Type == "MELEE" then
             return true
@@ -127,7 +127,7 @@ function CheckDone(Type)
         end
     end
     
-	return false
+    return false
 end
 
 sethiddenproperty(l,"Technology",2)
