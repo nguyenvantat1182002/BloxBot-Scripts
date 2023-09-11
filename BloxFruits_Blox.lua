@@ -138,18 +138,9 @@ function CheckDone(Type)
     return false
 end
 
-WriteData("ExecuteScript", "Level: " .. LocalPlayer.Data.Level.Value)
-
-task.wait(0.8)
-
-while isfile(fileName) do
-    task.wait(3)
-end
 
 UGS.MasterVolume = 0
-
 RunService:Set3dRenderingEnabled(false)
-
 setfpscap(FPSCap)
 
 w.DescendantAdded:Connect(function(v)
@@ -226,6 +217,13 @@ for i = 1,#l:GetChildren() do
     end
 end
 
+WriteData("ExecuteScript", "")
+task.wait(0.8)
+
+while isfile(fileName) do
+    task.wait(3)
+end
+
 local data
 
 while true do
@@ -237,10 +235,12 @@ while true do
         end
     end
 
-    data = "Level: " .. LocalPlayer.Data.Level.Value
+    local level = LocalPlayer.Data.Level.Value
+
+    data = "Level: " .. level
 
     if CheckDone(TypeDone) then
-        if TypeDone == 'MELEE' then
+        if level >= 2450 and TypeDone == 'MELEE' or TypeDone == "1K" or TypeDone == '1K5' then
             data = data .. ' - Info: Melee'
         elseif TypeDone == 'GOD' then
             data = data .. ' - Info: Godhuman'
