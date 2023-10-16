@@ -224,25 +224,6 @@ while isfile(fileName) do
     task.wait(3)
 end
 
--- chuyen server
-
-local apiUrl = "https://games.roblox.com/v1/games/2753915549/servers/Public?sortOrder=Asc&limit=10"
-
-function ListServers(cursor)
-   local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
-   return Http:JSONDecode(Raw)
-end
-
-local Server, Next; repeat
-   local Servers = ListServers(Next)
-   Server = Servers.data[1]
-   Next = Servers.nextPageCursor
-until Server
-
-TeleportService:TeleportToPlaceInstance(_place, Server.id, game.Players.LocalPlayer)
-
--- ket thuc chuyen server
-
 local data
 
 while true do
