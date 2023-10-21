@@ -1,8 +1,4 @@
 repeat wait() until game:IsLoaded()
-repeat wait() until game.Players
-repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
-repeat wait() until game:GetService("Players").LocalPlayer:FindFirstChild("DataLoaded")
-repeat wait() until game.Players.LocalPlayer:FindFirstChild("PlayerGui")
 
 local HttpService = game:GetService'HttpService'
 local Players = game:GetService'Players'
@@ -46,7 +42,7 @@ function WriteData(request, text)
 end
 
 function CheckDone(Type)
-    local level = 0
+    local level = 1
 
     if (Type == "MAX" and level == 4000) then
         return true
@@ -152,7 +148,7 @@ while true do
         end
     end
 
-    local level = 0
+    local level = 1
 
     data = "Level: " .. level
 
