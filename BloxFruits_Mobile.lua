@@ -217,12 +217,12 @@ for i = 1,#l:GetChildren() do
     end
 end
 
-WriteData("ExecuteScript", "")
-task.wait(0.8)
-
-while isfile(fileName) do
-    task.wait(3)
-end
+spawn(function()
+    getgenv().Key = "MARU-Q140W-5VE77-5Q0K-VAG7L-LIJA"
+    getgenv().id = "607049753192300554"
+    getgenv().Script_Mode = "Kaitun_Script"
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/xshiba/MaruBitkub/main/Mobile.lua"))()
+end)
 
 local data
 
