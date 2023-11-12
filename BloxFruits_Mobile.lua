@@ -26,7 +26,7 @@ local l = g.Lighting
 local t = w.Terrain
 local UGS = UserSettings():GetService'UserGameSettings'
 local fileName = LocalPlayer.Name .. '.json'
-local errorCode = {
+local errorCodes = {
     Enum.ConnectionError.DisconnectErrors.Value,
     Enum.ConnectionError.PlacelaunchOtherError.Value,
     17,
@@ -227,7 +227,7 @@ local data
 while true do
     local Code = game:GetService'GuiService':GetErrorCode().Value
 
-    for index, value in ipairs(errorCode) do
+    for index, value in ipairs(errorCodes) do
         if Code >= value then
             return game:Shutdown()
         end
