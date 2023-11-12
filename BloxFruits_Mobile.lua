@@ -17,9 +17,8 @@ local UserInputService = game:GetService("UserInputService")
 -- GOD
 -- CDK
 -- CDKSG
-local TypeDone = "1K"
+local TypeDone = "1K5"
 
-local FPSCap = 8
 local decalsyeeted = true
 local g = game
 local w = g.Workspace
@@ -141,7 +140,6 @@ end
 
 UGS.MasterVolume = 0
 RunService:Set3dRenderingEnabled(false)
-setfpscap(FPSCap)
 
 w.DescendantAdded:Connect(function(v)
     if v:IsA("BasePart") and not v:IsA("MeshPart") then
