@@ -17,7 +17,7 @@ local UserInputService = game:GetService("UserInputService")
 -- GOD
 -- CDK
 -- CDKSG
-local TypeDone = "1K5"
+local TypeDone = "CDKSG"
 
 local decalsyeeted = true
 local g = game
@@ -41,12 +41,12 @@ local errorCodes = {
 }
 
 function WriteData(request, text)
-	local data = HttpService:JSONEncode {
-	    Request = request,
-	    Text = text
-	}
-	
-	writefile(fileName, data)
+ local data = HttpService:JSONEncode {
+     Request = request,
+     Text = text
+ }
+ 
+ writefile&#40;fileName, data&#41;
 end
 
 function CheckItem(Item)
@@ -74,7 +74,7 @@ function checkLeopardI()
     for i, v in pairs(inv) do
         if v.Type == "Blox Fruit" then
             if v.Rarity == 4 and v.Name == "Leopard-Leopard" then
-                return "|Leopard[I]"
+                return "|Leo"
             end
         end
     end
@@ -82,39 +82,87 @@ function checkLeopardI()
 end
 
 function checkLeopardU()
-	if game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == "Leopard-Leopard" then
-		return "|Leopard[U]"
-	end
-	return ""
+ if game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == "Leopard-Leopard" then
+  return "|Leo"
+ end
+ return ""
 end
 
 function checkMochi()
-	-- kiem tra neu nhu dung trai mochi
-	if game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == "Dough-Dough" then
-		local Awaked = 0
-		local AwakedAbilComF = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getAwakenedAbilities")
-		if AwakedAbilComF then 
-			for i, v in pairs(AwakedAbilComF) do 
-				if v["Awakened"] then 
-					Awaked = Awaked + 1 
-				end 
-			end
-		end
+ -- kiem tra neu nhu dung trai mochi
+ if game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == "Dough-Dough" then
+  local Awaked = 0
+  local AwakedAbilComF = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getAwakenedAbilities")
+  if AwakedAbilComF then 
+   for i, v in pairs(AwakedAbilComF) do 
+    if v["Awakened"] then 
+     Awaked = Awaked + 1 
+    end 
+   end
+  end
 
-		FullAwakeCheck = false
+  FullAwakeCheck = false
 
-		if Awaked == 6 then
-			FullAwakeCheck = true
-		end
+  if Awaked == 6 then
+   FullAwakeCheck = true
+  end
 
-		if FullAwakeCheck then
-			return "|Mochi[V2]"
-		else
-			return "|Mochi[V1]"
-		end
-	end
+  if FullAwakeCheck then
+   return "|MCV2"
+  else
+   return "|MCV1"
+  end
+ end
 
-	return ""
+ return ""
+end
+
+function checkKitsune()
+    local inv = game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("getInventory")
+    for i, v in pairs(inv) do
+        if v.Type == "Blox Fruit" then
+            if v.Rarity == 4 and v.Name == "Kitsune-Kitsune" then
+                return "|Kit"
+            end
+        end
+    end
+    return ""
+end
+
+function checkTRex()
+    local inv = game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("getInventory")
+    for i, v in pairs(inv) do
+        if v.Type == "Blox Fruit" then
+            if v.Rarity == 4 and v.Name == "T-Rex-T-Rex" then
+                return "|T-Rex"
+            end
+        end
+    end
+    return ""
+end
+
+function checkDragon()
+    local inv = game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("getInventory")
+    for i, v in pairs(inv) do
+        if v.Type == "Blox Fruit" then
+            if v.Name == "Dragon-Dragon" then
+                return "|Dragon"
+            end
+        end
+    end
+    return ""
+end
+
+function checkMammoth()
+    local inv = game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("getInventory")
+    for i, v in pairs(inv) do
+        if v.Type == "Blox Fruit" then
+            if v.Rarity == 4 and v.Name == "Mammoth-Mammoth" then
+                return "|Mammoth"
+            end
+        end
+    end
+    return ""
 end
 
 function CheckDone(Type)
@@ -122,14 +170,14 @@ function CheckDone(Type)
 
     if (Type == "1K" and level > 1000) or (Type == "1K5" and level > 1500) then
         return true
-    elseif level >= 2450 then
+    elseif level >= 2550 then
         if Type == "MELEE" then
             return true
         elseif Type == "GOD" and game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyGodhuman", true) == 1 then
             return true
         elseif Type == "CDK" and CheckItem("Cursed Dual Katana") == true then
             return true
-        elseif Type == "CDKSG" and CheckItem("Soul Guitar") == true then
+        elseif Type == "CDKSG" and CheckItem("Cursed Dual Katana") == true and CheckItem("Soul Guitar") == true then
             return true
         end
     end
@@ -137,87 +185,9 @@ function CheckDone(Type)
     return false
 end
 
-
-UGS.MasterVolume = 0
-RunService:Set3dRenderingEnabled(false)
-
-w.DescendantAdded:Connect(function(v)
-    if v:IsA("BasePart") and not v:IsA("MeshPart") then
-        v.Material = "Plastic"
-        v.Reflectance = 0
-    elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
-        v.Transparency = 1
-    elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-        v.Lifetime = NumberRange.new(0)
-    elseif v:IsA("Explosion") then
-        v.BlastPressure = 1
-        v.BlastRadius = 1
-    elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") or v:IsA("Sparkles") then
-        v.Enabled = false
-    elseif v:IsA("MeshPart") and decalsyeeted then
-        v.Material = "Plastic"
-        v.Reflectance = 0
-        v.TextureID = 10385902758728957
-    elseif v:IsA("SpecialMesh") and decalsyeeted then
-        v.TextureId=0
-    elseif v:IsA("ShirtGraphic") and decalsyeeted then
-        v.ShirtGraphic=1
-    elseif (v:IsA("Shirt") or v:IsA("Pants")) and decalsyeeted then
-        v[v.ClassName.."Template"]=1
-    end
-end)
-
-sethiddenproperty(l,"Technology",2)
-sethiddenproperty(t,"Decoration",false)
-
-t.WaterWaveSize = 0
-t.WaterWaveSpeed = 0
-t.WaterReflectance = 0
-t.WaterTransparency = 0
-
-l.GlobalShadows = 0
-l.FogEnd = 9e9
-l.Brightness = 0
-
-settings().Rendering.QualityLevel = "Level01"
-
-for i, v in pairs(w:GetDescendants()) do
-    if v:IsA("BasePart") and not v:IsA("MeshPart") then
-        v.Material = "Plastic"
-        v.Reflectance = 0
-    elseif (v:IsA("Decal") or v:IsA("Texture")) and decalsyeeted then
-        v.Transparency = 1
-    elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-        v.Lifetime = NumberRange.new(0)
-    elseif v:IsA("Explosion") then
-        v.BlastPressure = 1
-        v.BlastRadius = 1
-    elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") or v:IsA("Sparkles") then
-        v.Enabled = false
-    elseif v:IsA("MeshPart") and decalsyeeted then
-        v.Material = "Plastic"
-        v.Reflectance = 0
-        v.TextureID = 10385902758728957
-    elseif v:IsA("SpecialMesh") and decalsyeeted  then
-        v.TextureId=0
-    elseif v:IsA("ShirtGraphic") and decalsyeeted then
-        v.Graphic=1
-    elseif (v:IsA("Shirt") or v:IsA("Pants")) and decalsyeeted then
-        v[v.ClassName.."Template"]=1
-    end
-end
-
-for i = 1,#l:GetChildren() do
-    e = l:GetChildren()[i]
-
-    if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
-        e.Enabled = false
-    end
-end
-
 spawn(function()
-    getgenv().Key = "MARU-Q140W-5VE77-5Q0K-VAG7L-LIJA"
-    getgenv().id = "607049753192300554"
+    getgenv().Key = "MARU-841G-2H946-YXOB-X592H-ZG2X"
+    getgenv().id = "1172407412284739595"
     getgenv().Script_Mode = "Kaitun_Script"
     loadstring(game:HttpGet("https://raw.githubusercontent.com/xshiba/MaruBitkub/main/Mobile.lua"))()
 end)
@@ -251,9 +221,9 @@ while true do
         break
     end
 
-    WriteData("", data)
+    WriteData("", data .. checkMochi() .. checkLeopardI() .. checkLeopardU() .. checkKitsune() .. checkTRex() .. checkDragon() .. checkMammoth())
 
     task.wait(60)
 end
 
-WriteData("Completed", data .. checkMochi() .. checkLeopardI() .. checkLeopardU())
+WriteData("Completed", data .. checkMochi() .. checkLeopardI() .. checkLeopardU() .. checkKitsune() .. checkTRex() .. checkDragon() .. checkMammoth())
