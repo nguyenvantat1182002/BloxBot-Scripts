@@ -41,12 +41,12 @@ local errorCodes = {
 }
 
 function WriteData(request, text)
- local data = HttpService:JSONEncode {
-     Request = request,
-     Text = text
- }
- 
- writefile&#40;fileName, data&#41;
+	local data = HttpService:JSONEncode {
+	    Request = request,
+	    Text = text
+	}
+	
+	writefile(fileName, data)
 end
 
 function CheckItem(Item)
@@ -82,39 +82,39 @@ function checkLeopardI()
 end
 
 function checkLeopardU()
- if game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == "Leopard-Leopard" then
-  return "|Leo"
- end
- return ""
+	if game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == "Leopard-Leopard" then
+		return "|Leo"
+	end
+	return ""
 end
 
 function checkMochi()
- -- kiem tra neu nhu dung trai mochi
- if game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == "Dough-Dough" then
-  local Awaked = 0
-  local AwakedAbilComF = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getAwakenedAbilities")
-  if AwakedAbilComF then 
-   for i, v in pairs(AwakedAbilComF) do 
-    if v["Awakened"] then 
-     Awaked = Awaked + 1 
-    end 
-   end
-  end
+	-- kiem tra neu nhu dung trai mochi
+	if game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == "Dough-Dough" then
+		local Awaked = 0
+		local AwakedAbilComF = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getAwakenedAbilities")
+		if AwakedAbilComF then 
+			for i, v in pairs(AwakedAbilComF) do 
+				if v["Awakened"] then 
+					Awaked = Awaked + 1 
+				end 
+			end
+		end
 
-  FullAwakeCheck = false
+		FullAwakeCheck = false
 
-  if Awaked == 6 then
-   FullAwakeCheck = true
-  end
+		if Awaked == 6 then
+			FullAwakeCheck = true
+		end
 
-  if FullAwakeCheck then
-   return "|MCV2"
-  else
-   return "|MCV1"
-  end
- end
+		if FullAwakeCheck then
+			return "|MCV2"
+		else
+			return "|MCV1"
+		end
+	end
 
- return ""
+	return ""
 end
 
 function checkKitsune()
