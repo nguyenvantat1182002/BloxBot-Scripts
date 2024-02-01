@@ -185,13 +185,6 @@ function CheckDone(Type)
     return false
 end
 
-spawn(function()
-    getgenv().Key = "MARU-841G-2H946-YXOB-X592H-ZG2X"
-    getgenv().id = "1172407412284739595"
-    getgenv().Script_Mode = "Kaitun_Script"
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/xshiba/MaruBitkub/main/Mobile.lua"))()
-end)
-
 local data
 
 while true do
