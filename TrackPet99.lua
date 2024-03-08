@@ -23,10 +23,7 @@ local getDiamond = function()
 end
 
 local updateInterval = 30
-local shutdownInterval = 120
-
 local nextUpdate = 0
-local nextShutdown = os.time() + shutdownInterval
 local previousDiamondCount = getDiamond()
 
 while true do
@@ -35,16 +32,6 @@ while true do
     if os.time() > nextUpdate then
         WriteData("", tostring(currentDiamondCount) .. " diamonds")
         nextUpdate = os.time() + updateInterval
-    end
-
-    if os.time() > nextShutdown then
-        if math.abs(currentDiamondCount - previousDiamondCount) < 2000 then
-            WriteData("Rejoin", tostring(currentDiamondCount) .. " diamonds")
-            return
-        end
-
-        nextShutdown = os.time() + shutdownInterval
-        previousDiamondCount = getDiamond()
     end
 
     task.wait(1)
