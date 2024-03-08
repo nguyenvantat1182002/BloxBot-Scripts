@@ -24,12 +24,10 @@ end
 
 local updateInterval = 30
 local nextUpdate = 0
-local previousDiamondCount = getDiamond()
 
 while true do
-    local currentDiamondCount = getDiamond()
-
     if os.time() > nextUpdate then
+        local currentDiamondCount = getDiamond()
         WriteData("", tostring(currentDiamondCount) .. " diamonds")
         nextUpdate = os.time() + updateInterval
     end
