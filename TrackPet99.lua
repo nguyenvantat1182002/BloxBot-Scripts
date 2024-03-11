@@ -13,6 +13,10 @@ function WriteData(request, text)
     writefile(LocalPlayer.Name .. '.json', data)
 end
 
+local function formatNumber(num)
+    return tostring(num):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+end
+
 local getDiamond = function()
     for i, v in pairs(Library.Inventory.Currency) do
         if v.id == "Diamonds" then
@@ -22,13 +26,18 @@ local getDiamond = function()
     return 0
 end
 
-local updateInterval = 30
+
+local updateInterval = 60
 local nextUpdate = 0
+local previousDiamondCount = getDiamond()
 
 while true do
     if os.time() > nextUpdate then
         local currentDiamondCount = getDiamond()
-        WriteData("", tostring(currentDiamondCount) .. " diamonds")
+        local totalDiamondPerMin = math.abs(currentDiamondCount - previousDiamondCount)
+        WriteData("", tostring(formatNumber(currentDiamondCount)) .. "/" .. tostring(formatNumber(totalDiamondPerMin)) .. " diamonds")
+        
+        previousDiamondCount = getDiamond()
         nextUpdate = os.time() + updateInterval
     end
 
