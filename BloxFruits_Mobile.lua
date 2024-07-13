@@ -17,7 +17,7 @@ local UserInputService = game:GetService("UserInputService")
 -- GOD
 -- CDK
 -- CDKSG
-local TypeDone = "CDKSG"
+local TypeDone = "CDK"
 
 local decalsyeeted = true
 local g = game
@@ -26,19 +26,7 @@ local l = g.Lighting
 local t = w.Terrain
 local UGS = UserSettings():GetService'UserGameSettings'
 local fileName = LocalPlayer.Name .. '.json'
-local errorCodes = {
-    Enum.ConnectionError.DisconnectErrors.Value,
-    Enum.ConnectionError.PlacelaunchOtherError.Value,
-    17,
-    279,
-    266,
-    722,
-    772,
-    272,
-    529,
-    277,
-    769
-}
+
 
 function WriteData(request, text)
 	local data = HttpService:JSONEncode {
@@ -89,7 +77,6 @@ function checkLeopardU()
 end
 
 function checkMochi()
-	-- kiem tra neu nhu dung trai mochi
 	if game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == "Dough-Dough" then
 		local Awaked = 0
 		local AwakedAbilComF = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getAwakenedAbilities")
@@ -185,38 +172,40 @@ function CheckDone(Type)
     return false
 end
 
-local data
+
+local updateInterval = 30
+local nextUpdate = os.time() + updateInterval
 
 while true do
-    local Code = game:GetService'GuiService':GetErrorCode().Value
+    if os.time() > nextUpdate then
+        local level = LocalPlayer.Data.Level.Value
+        local data = "Level: " .. level
+        local done = CheckDone(TypeDone)
+        local request = ''
 
-    for index, value in ipairs(errorCodes) do
-        if Code >= value then
-            return game:Shutdown()
+        if done then
+            if TypeDone == 'MELEE' then
+                data = data .. ' - Info: Melee'
+            elseif TypeDone == 'GOD' then
+                data = data .. ' - Info: Godhuman'
+            elseif TypeDone == 'CDK' then
+                data = data .. ' - Info: Godhuman|CDK'
+            elseif TypeDone == 'CDKSG' then
+                data = data .. ' - Info: Godhuman|CDK|SG'
+            end
+
+            request = 'Completed'
         end
-    end
+        
+        data = data .. checkMochi() .. checkLeopardI() .. checkLeopardU() .. checkKitsune() .. checkTRex() .. checkDragon() .. checkMammoth()
+        WriteData(request, data)
 
-    local level = LocalPlayer.Data.Level.Value
-
-    data = "Level: " .. level
-
-    if CheckDone(TypeDone) then
-        if TypeDone == 'MELEE' then
-            data = data .. ' - Info: Melee'
-        elseif TypeDone == 'GOD' then
-            data = data .. ' - Info: Godhuman'
-        elseif TypeDone == 'CDK' then
-            data = data .. ' - Info: Godhuman|CDK'
-        elseif TypeDone == 'CDKSG' then
-            data = data .. ' - Info: Godhuman|CDK|SG'
+        if done then
+            return
         end
 
-        break
+        nextUpdate = os.time() + updateInterval
     end
-
-    WriteData("", data .. checkMochi() .. checkLeopardI() .. checkLeopardU() .. checkKitsune() .. checkTRex() .. checkDragon() .. checkMammoth())
-
-    task.wait(60)
+    
+    task.wait(1)
 end
-
-WriteData("Completed", data .. checkMochi() .. checkLeopardI() .. checkLeopardU() .. checkKitsune() .. checkTRex() .. checkDragon() .. checkMammoth())
