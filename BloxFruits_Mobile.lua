@@ -173,8 +173,11 @@ function CheckDone(Type)
 end
 
 
+local changeInterval = 900
 local updateInterval = 30
 local nextUpdate = os.time() + updateInterval
+local deadline = os.time() + changeInterval
+local previousLevel = LocalPlayer.Data.Level.Value
 
 while true do
     if os.time() > nextUpdate then
@@ -205,6 +208,14 @@ while true do
         end
 
         nextUpdate = os.time() + updateInterval
+    end
+
+    if os.time() > deadline and LocalPlayer.Data.Level.Value == previousLevel then
+        WriteData('Rejoin', '')
+        return
+    else
+        previousLevel = LocalPlayer.Data.Level.Value
+        deadline = os.time() + changeInterval
     end
     
     task.wait(1)
