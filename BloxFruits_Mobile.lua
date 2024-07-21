@@ -210,12 +210,14 @@ while true do
         nextUpdate = os.time() + updateInterval
     end
 
-    if os.time() > deadline and LocalPlayer.Data.Level.Value == previousLevel then
-        WriteData('Rejoin', '')
-        return
-    else
-        previousLevel = LocalPlayer.Data.Level.Value
-        deadline = os.time() + changeInterval
+    if os.time() > deadline then
+        if LocalPlayer.Data.Level.Value == previousLevel then
+            WriteData('Rejoin', '')
+            return
+        else
+            previousLevel = LocalPlayer.Data.Level.Value
+            deadline = os.time() + changeInterval
+        end
     end
     
     task.wait(1)
