@@ -17,7 +17,7 @@ local UserInputService = game:GetService("UserInputService")
 -- GOD
 -- CDK
 -- CDKSG
-local TypeDone = "CDK"
+local TypeDone = "CDKSG"
 
 local decalsyeeted = true
 local g = game
@@ -173,7 +173,7 @@ function CheckDone(Type)
 end
 
 
-local changeInterval = 900
+local changeInterval = 300
 local updateInterval = 30
 local nextUpdate = os.time() + updateInterval
 local deadline = os.time() + changeInterval
@@ -182,25 +182,25 @@ local previousLevel = LocalPlayer.Data.Level.Value
 while true do
     if os.time() > nextUpdate then
         local level = LocalPlayer.Data.Level.Value
-        local data = "Level: " .. level
+        local data = level
         local done = CheckDone(TypeDone)
         local request = ''
 
         if done then
             if TypeDone == 'MELEE' then
-                data = data .. ' - Info: Melee'
+                data = data .. '|MELEE'
             elseif TypeDone == 'GOD' then
-                data = data .. ' - Info: Godhuman'
+                data = data .. '|GOD'
             elseif TypeDone == 'CDK' then
-                data = data .. ' - Info: Godhuman|CDK'
+                data = data .. '|GOD|CDK'
             elseif TypeDone == 'CDKSG' then
-                data = data .. ' - Info: Godhuman|CDK|SG'
+                data = data .. '|GOD|CDK|SG'
             end
 
             request = 'Completed'
         end
         
-        data = data .. checkMochi() .. checkLeopardI() .. checkLeopardU() .. checkKitsune() .. checkTRex() .. checkDragon() .. checkMammoth()
+        data = data .. checkMochi() .. checkLeopardI() .. checkLeopardU() .. checkKitsune() .. checkDragon()
         WriteData(request, data)
 
         if done then
