@@ -1,13 +1,16 @@
 repeat wait() until game:IsLoaded()
 
-local HttpService = game:GetService'HttpService'
 local Players = game:GetService'Players'
 local LocalPlayer = Players.LocalPlayer if not LocalPlayer then repeat LocalPlayer = Players.LocalPlayer task.wait() until LocalPlayer end task.wait(1)
+local HttpService = game:GetService'HttpService'
 local Remotes = game:GetService("ReplicatedStorage").Remotes
 
+local TRADES_LIMIT = 15
 
-local inventory = Remotes.GetInventory:InvokeServer()
-print(HttpService:JSONEncode(inventory.TradeLimitCounts))
+
+local receivingAccounts = {}
+local firstTime = true
+
 
 function WriteData(request, text)
     local data = HttpService:JSONEncode {
@@ -18,17 +21,9 @@ function WriteData(request, text)
 end
 
 
-local receivingAccounts = {}
-
 for _, username in ipairs(receivingAccounts) do
     if LocalPlayer.Name == username then
-        local inventory = Remotes.GetInventory:InvokeServer()
-
-        if inventory.TradeLimitCounts['Trades'] > 3 then
-            break
-        else
-            continue
-        end
+        break
     end
 
     loadstring(game:HttpGet(''))
@@ -46,12 +41,16 @@ for _, username in ipairs(receivingAccounts) do
     end
 end
 
-
-loadstring(game:HttpGet(''))
-
 while true do
     local inventory = Remotes.GetInventory:InvokeServer()
-    if inventory.TradeLimitCounts['Trades'] < 3 then
+    local currentTradesLimit = TRADES_LIMIT - inventory.TradeLimitCounts['Trades']
+    
+    if currentTradesLimit > 3 then
+        if firstTime then
+            loadstring(game:HttpGet(''))
+            firstTime = false
+        end
+    elseif currentTradesLimit < 3 then
         WriteData('Completed', '')
         return
     end
