@@ -174,38 +174,33 @@ end
 
 
 local updateInterval = 30
-local nextUpdate = os.time() + updateInterval
 
 while true do
-    if os.time() > nextUpdate then
-        local level = LocalPlayer.Data.Level.Value
-        local data = level
-        local done = CheckDone(TypeDone)
-        local request = ''
+    local level = LocalPlayer.Data.Level.Value
+    local data = level
+    local done = CheckDone(TypeDone)
+    local request = ''
 
-        if done then
-            if TypeDone == 'MELEE' then
-                data = data .. '|MELEE'
-            elseif TypeDone == 'GOD' then
-                data = data .. '|GOD'
-            elseif TypeDone == 'CDK' then
-                data = data .. '|GOD|CDK'
-            elseif TypeDone == 'CDKSG' then
-                data = data .. '|GOD|CDK|SG'
-            end
-
-            request = 'Completed'
-        end
-        
-        data = data .. checkMochi() .. checkLeopardI() .. checkLeopardU() .. checkKitsune() .. checkDragon()
-        WriteData(request, data)
-
-        if done then
-            return
+    if done then
+        if TypeDone == 'MELEE' then
+            data = data .. '|MELEE'
+        elseif TypeDone == 'GOD' then
+            data = data .. '|GOD'
+        elseif TypeDone == 'CDK' then
+            data = data .. '|GOD|CDK'
+        elseif TypeDone == 'CDKSG' then
+            data = data .. '|GOD|CDK|SG'
         end
 
-        nextUpdate = os.time() + updateInterval
+        request = 'Completed'
+    end
+    
+    data = data .. checkMochi() .. checkLeopardI() .. checkLeopardU() .. checkKitsune() .. checkDragon()
+    WriteData(request, data)
+
+    if done then
+        return
     end
 
-    task.wait(5)
+    task.wait(updateInterval)
 end
