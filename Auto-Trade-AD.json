@@ -1,5 +1,6 @@
+repeat wait() until game:IsLoaded()
 
-
+local HttpService = game:GetService'HttpService'
 local Players = game:GetService'Players'
 local LocalPlayer = Players.LocalPlayer if not LocalPlayer then repeat LocalPlayer = Players.LocalPlayer task.wait() until LocalPlayer end task.wait(1)
 local Remotes = game:GetService("ReplicatedStorage").Remotes
