@@ -36,6 +36,8 @@ for _, username in ipairs(receivingAccounts) do
             WriteData('Completed', '')
             return
         end
+        
+        WriteData('', 'Trade to: ' .. username)
 
         task.wait(5)
     end
@@ -50,6 +52,8 @@ while true do
         WriteData('Completed', '')
         return
     end
+
+    WriteData('', 'Receiving...')
 
     task.wait(5)
 end
