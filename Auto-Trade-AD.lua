@@ -18,20 +18,26 @@ end
 local receivingAccounts = {}
 
 for _, username in ipairs(receivingAccounts) do
-    if LocalPlayer.Name != username then
+    if LocalPlayer.Name == username then
+        local inventory = Remotes.GetInventory:InvokeServer()
 
-        loadstring(game:HttpGet(''))
-        
-        while true do
-            local inventory = Remotes.GetInventory:InvokeServer()
-            if inventory.Items['Trait Crystal'] == 0 then
-                WriteData('Completed', '')
-                return
-            end
-
-            task.wait(5)
+        if inventory.TradeLimitCounts['Trades'] > 3 then
+            break
+        else
+            continue
         end
+    end
+
+    loadstring(game:HttpGet(''))
         
+    while true do
+        local inventory = Remotes.GetInventory:InvokeServer()
+        if inventory.Items['Trait Crystal'] == 0 then
+            WriteData('Completed', '')
+            return
+        end
+
+        task.wait(5)
     end
 end
 
@@ -40,7 +46,7 @@ loadstring(game:HttpGet(''))
 
 while true do
     local inventory = Remotes.GetInventory:InvokeServer()
-    if inventory.TradeLimitCounts['Sales'] == 0 then
+    if inventory.TradeLimitCounts['Trades'] < 3 then
         WriteData('Completed', '')
         return
     end
