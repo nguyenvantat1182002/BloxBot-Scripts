@@ -4,12 +4,33 @@ local Players = game:GetService'Players'
 local LocalPlayer = Players.LocalPlayer if not LocalPlayer then repeat LocalPlayer = Players.LocalPlayer task.wait() until LocalPlayer end task.wait(1)
 local HttpService = game:GetService'HttpService'
 local Remotes = game:GetService("ReplicatedStorage").Remotes
-
+local TeleportService = game:GetService("TeleportService")
+local TeleportService = game:GetService("TeleportService")
 local TRADES_LIMIT = 15
 
 
 local receivingAccounts = {}
 local firstTime = true
+
+function JoinLowServer(n)
+    local players = Players:GetPlayers()
+    if #players < n + 2 then
+        return
+    end
+
+    local args = {
+        [1] = "TradingLobby"
+    }
+    local servers = Remotes.GetServerList:InvokeServer(unpack(args))
+
+    for k, v in pairs(servers) do
+        for k, v in pairs(servers[k]) do
+            if v['PlayerCount'] < n then
+                TeleportService:TeleportToPlaceInstance(game.PlaceId, k, Players.LocalPlayer)
+            end
+        end
+    end
+end
 
 
 function WriteData(request, text)
@@ -47,6 +68,9 @@ while true do
     
     if currentTradesLimit > 3 then
         if firstTime then
+            if game.PlaceId == 17490500437 then
+                JoinLowServer(n)
+            end
             loadstring(game:HttpGet(''))
             firstTime = false
         end
