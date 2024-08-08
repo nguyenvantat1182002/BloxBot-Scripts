@@ -6,6 +6,9 @@ local LocalPlayer = Players.LocalPlayer if not LocalPlayer then repeat LocalPlay
 local Remotes = game:GetService("ReplicatedStorage").Remotes
 
 
+local inventory = Remotes.GetInventory:InvokeServer()
+print(HttpService:JSONEncode(inventory.TradeLimitCounts))
+
 function WriteData(request, text)
     local data = HttpService:JSONEncode {
         Request = request,
