@@ -45,11 +45,6 @@ function isHolder(username)
 end
 
 function joinLowServer(n)
-    local players = Players:GetPlayers()
-    if #players < n + 2 then
-        return
-    end
-
     local args = {
         [1] = "TradingLobby"
     }
@@ -94,6 +89,7 @@ else
             ["Risky Dice"] = true
         },
         ["ReceiverAccount2"] = table_[LocalPlayer.Name],
+        ["AutoJoinTradeHub"] = true,
     }
 
 end
@@ -102,16 +98,27 @@ spawn(function()
     loadstring(game:HttpGet("https://nousigi.com/loader.lua"))()
 end)
 
+if isHolderPlayer then
+    while true do
+        if game.PlaceId == 17490500437 then
+            local players = Players:GetPlayers()
+            if #players < n + 2 then
+                break
+            end
+        
+            joinLowServer(PLAYERS_IN_LOW_SERVER)
+        end
+
+        task.wait(UPDATE_INTERVAL)
+    end
+end
+
 while true do
     local inventory = Remotes.GetInventory:InvokeServer()
     local currentTradesLimit = TRADES_LIMIT - inventory.TradeLimitCounts['Trades']
     
     if isHolderPlayer then
         if currentTradesLimit > TRADE_LIMIT_MIN then
-            if game.PlaceId == 17490500437 then
-                joinLowServer(PLAYERS_IN_LOW_SERVER)
-            end
-
             writeData('', 'In transaction')
         elseif currentTradesLimit <= TRADE_LIMIT_MIN then
             writeData('Completed', 'Transaction completed')
@@ -124,7 +131,7 @@ while true do
             writeData('Completed', 'Transferred to ' .. holder)
             return
         else
-            writeData('', 'Trade to' .. holder)
+            writeData('', 'Trade to ' .. holder)
         end
     end
     
