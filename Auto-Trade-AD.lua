@@ -1,18 +1,50 @@
-repeat wait() until game:IsLoaded()
+repeat task.wait(1) until game:IsLoaded()
+
 
 local Players = game:GetService'Players'
-local LocalPlayer = Players.LocalPlayer if not LocalPlayer then repeat LocalPlayer = Players.LocalPlayer task.wait() until LocalPlayer end task.wait(1)
+local LocalPlayer = Players.LocalPlayer
+if not LocalPlayer then
+    repeat
+        LocalPlayer = Players.LocalPlayer
+        task.wait(1)
+    until LocalPlayer
+end
+task.wait(1)
+
 local HttpService = game:GetService'HttpService'
 local Remotes = game:GetService("ReplicatedStorage").Remotes
 local TeleportService = game:GetService("TeleportService")
-local TeleportService = game:GetService("TeleportService")
-local TRADES_LIMIT = 15
 
+getgenv().Key = "kf2e032c8ffdb6a1bea81e8f"
+
+local TRADES_LIMIT = 15
+local PLAYERS_IN_LOW_SERVER = 10
+local UPDATE_INTERVAL = 5
+local TRADE_LIMIT_MIN = 3
 
 local receivingAccounts = {}
-local firstTime = true
+local table_ = {}
 
-function JoinLowServer(n)
+
+function writeData(request, text)
+    local data = HttpService:JSONEncode {
+        Request = request,
+        Text = text
+    }
+    writefile(LocalPlayer.Name .. '.json', data)
+end
+
+function isHolder(username)
+    for _, value in ipairs(receivingAccounts) do
+        if value == username then
+            return true
+        end
+    end
+
+    return false
+end
+
+function joinLowServer(n)
     local players = Players:GetPlayers()
     if #players < n + 2 then
         return
@@ -23,63 +55,76 @@ function JoinLowServer(n)
     }
     local servers = Remotes.GetServerList:InvokeServer(unpack(args))
 
-    for k, v in pairs(servers) do
-        for k, v in pairs(servers[k]) do
-            if v['PlayerCount'] < n then
-                TeleportService:TeleportToPlaceInstance(game.PlaceId, k, Players.LocalPlayer)
+    for area, _ in pairs(servers) do
+        for jobId, value in pairs(servers[area]) do
+            if value['PlayerCount'] < n then
+                TeleportService:TeleportToPlaceInstance(game.PlaceId, jobId, LocalPlayer)
             end
         end
     end
 end
 
 
-function WriteData(request, text)
-    local data = HttpService:JSONEncode {
-        Request = request,
-        Text = text
+local isHolderPlayer = isHolder(LocalPlayer.Name)
+
+if isHolderPlayer then
+    getgenv().Config = {
+        ["AutoSave"] = true,
+        ["AutoTradeItem"] = true,
+        ["AutoJoinTradeHub"] = true
     }
-    writefile(LocalPlayer.Name .. '.json', data)
+else
+    getgenv().Config = {
+        ["AutoSave"] = true,
+        ["AutoTradeItem"] = true,
+        ["TradeItem"] = {
+            ["Star Rift (Purple)"] = true,
+            ["Frost Bind"] = true,
+            ["Star Rift (Red)"] = true,
+            ["Star Rift (Yellow)"] = true,
+            ["Star Rift (Green)"] = true,
+            ["VIP (Gift)"] = true,
+            ["Star Rift (Blue)"] = true,
+            ["Magic Mirror"] = true,
+            ["Trait Crystal"] = true,
+            ["Shiny Hunter (Gift)"] = true,
+            ["Divine Wish"] = true,
+            ["Divine Dragon Battlepass (Gift)"] = true,
+            ["Skip 10 Levels (Battlepass)"] = true,
+            ["Risky Dice"] = true
+        },
+        ["ReceiverAccount2"] = table_[LocalPlayer.Name],
+    }
+
 end
 
-
-for _, username in ipairs(receivingAccounts) do
-    if LocalPlayer.Name == username then
-        break
-    end
-
-    loadstring(game:HttpGet(''))
-        
-    while true do
-        local inventory = Remotes.GetInventory:InvokeServer()
-        if inventory.Items['Trait Crystal'] == 0 then
-            WriteData('Completed', '')
-            return
-        end
-        
-        WriteData('', 'Trade to: ' .. username)
-
-        task.wait(5)
-    end
-end
+spawn(function()
+    loadstring(game:HttpGet("https://nousigi.com/loader.lua"))()
+end)
 
 while true do
     local inventory = Remotes.GetInventory:InvokeServer()
     local currentTradesLimit = TRADES_LIMIT - inventory.TradeLimitCounts['Trades']
     
-    if currentTradesLimit > 3 then
-        if firstTime then
+    if isHolderPlayer then
+        if currentTradesLimit > TRADE_MIN then
             if game.PlaceId == 17490500437 then
-                JoinLowServer(n)
+                joinLowServer(PLAYERS_IN_LOW_SERVER)
             end
-            loadstring(game:HttpGet(''))
-            firstTime = false
+
+            WriteData('', 'In transaction')
+        elseif currentTradesLimit <= TRADE_MIN then
+            WriteData('Completed', 'Transaction completed')
+            return
         end
-    elseif currentTradesLimit < 3 then
-        WriteData('Completed', '')
-        return
+    else
+        if inventory.Items['Trait Crystal'] == 0 then
+            WriteData('Completed', 'Transferred')
+            return
+        else
+            WriteData('', 'Trade to' .. table_[LocalPlayer.Name])
+        end
     end
-
-    WriteData('', 'Receiving...')
-
-    task.wait(5)
+    
+    task.wait(UPDATE_INTERVAL)
 end
