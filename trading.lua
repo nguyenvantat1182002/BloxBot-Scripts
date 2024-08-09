@@ -107,13 +107,13 @@ while true do
     local currentTradesLimit = TRADES_LIMIT - inventory.TradeLimitCounts['Trades']
     
     if isHolderPlayer then
-        if currentTradesLimit > TRADE_MIN then
+        if currentTradesLimit > TRADE_LIMIT_MIN then
             if game.PlaceId == 17490500437 then
                 joinLowServer(PLAYERS_IN_LOW_SERVER)
             end
 
             WriteData('', 'In transaction')
-        elseif currentTradesLimit <= TRADE_MIN then
+        elseif currentTradesLimit <= TRADE_LIMIT_MIN then
             WriteData('Completed', 'Transaction completed')
             return
         end
