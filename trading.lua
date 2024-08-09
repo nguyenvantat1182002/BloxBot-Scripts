@@ -15,7 +15,7 @@ local HttpService = game:GetService'HttpService'
 local Remotes = game:GetService("ReplicatedStorage").Remotes
 local TeleportService = game:GetService("TeleportService")
 
-getgenv().Key = "kf2e032c8ffdb6a1bea81e8f"
+getgenv().Key = ""
 
 local TRADES_LIMIT = 15
 local PLAYERS_IN_LOW_SERVER = 10
@@ -54,6 +54,7 @@ function joinLowServer(n)
         for jobId, value in pairs(servers[area]) do
             if value['PlayerCount'] < n then
                 TeleportService:TeleportToPlaceInstance(game.PlaceId, jobId, LocalPlayer)
+                return
             end
         end
     end
@@ -102,7 +103,7 @@ if isHolderPlayer then
     while true do
         if game.PlaceId == 17490500437 then
             local players = Players:GetPlayers()
-            if #players < n + 2 then
+            if #players < PLAYERS_IN_LOW_SERVER + 2 then
                 break
             end
         
