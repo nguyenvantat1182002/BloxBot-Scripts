@@ -114,6 +114,8 @@ if isHolderPlayer then
     end
 end
 
+local deadline = os.time() + 600
+
 while true do
     local inventory = Remotes.GetInventory:InvokeServer()
     local currentTradesLimit = TRADES_LIMIT - inventory.TradeLimitCounts['Trades']
@@ -126,6 +128,11 @@ while true do
             return
         end
     else
+        if os.time() > deadline then
+            writeData('Rejoin', '')
+            return
+        end
+
         local holder = table_[LocalPlayer.Name]
 
         if inventory.Items['Trait Crystal'] == 0 then
