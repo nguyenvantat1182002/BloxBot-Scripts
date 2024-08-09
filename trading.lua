@@ -112,19 +112,19 @@ while true do
                 joinLowServer(PLAYERS_IN_LOW_SERVER)
             end
 
-            WriteData('', 'In transaction')
+            writeData('', 'In transaction')
         elseif currentTradesLimit <= TRADE_LIMIT_MIN then
-            WriteData('Completed', 'Transaction completed')
+            writeData('Completed', 'Transaction completed')
             return
         end
     else
         local holder = table_[LocalPlayer.Name]
-        
+
         if inventory.Items['Trait Crystal'] == 0 then
-            WriteData('Completed', 'Transferred to ' .. holder)
+            writeData('Completed', 'Transferred to ' .. holder)
             return
         else
-            WriteData('', 'Trade to' .. holder)
+            writeData('', 'Trade to' .. holder)
         end
     end
     
