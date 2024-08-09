@@ -118,11 +118,13 @@ while true do
             return
         end
     else
+        local holder = table_[LocalPlayer.Name]
+        
         if inventory.Items['Trait Crystal'] == 0 then
-            WriteData('Completed', 'Transferred')
+            WriteData('Completed', 'Transferred to ' .. holder)
             return
         else
-            WriteData('', 'Trade to' .. table_[LocalPlayer.Name])
+            WriteData('', 'Trade to' .. holder)
         end
     end
     
