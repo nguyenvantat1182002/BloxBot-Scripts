@@ -21,6 +21,7 @@ local TRADES_LIMIT = 15
 local PLAYERS_IN_LOW_SERVER = 10
 local UPDATE_INTERVAL = 5
 local TRADE_LIMIT_MIN = 3
+local TRADING_LOBBY_ID = 17490500437
 
 local receivingAccounts = {}
 local table_ = {}
@@ -58,6 +59,17 @@ function joinLowServer(n)
             end
         end
     end
+end
+
+function sameServerWith(username)
+    local players = Players:GetPlayers()
+    for _, value in pairs(players) do
+        if value == username then
+            return true
+        end
+    end
+
+    return false
 end
 
 
@@ -101,7 +113,7 @@ end)
 
 if isHolderPlayer then
     while true do
-        if game.PlaceId == 17490500437 then
+        if game.PlaceId == TRADING_LOBBY_ID then
             local players = Players:GetPlayers()
             if #players < PLAYERS_IN_LOW_SERVER + 2 then
                 break
@@ -114,7 +126,7 @@ if isHolderPlayer then
     end
 end
 
-local deadline = os.time() + 600
+local dealine = 0
 
 while true do
     local inventory = Remotes.GetInventory:InvokeServer()
@@ -122,24 +134,33 @@ while true do
     
     if isHolderPlayer then
         if currentTradesLimit > TRADE_LIMIT_MIN then
+            if not dealine == 0 and LocalPlayer.PlayerGui.PAGES.CaptchaPage.Visible and os.time() > dealine then
+                writeData('Rejoin', '')
+                return
+            end
+            
+            if LocalPlayer.PlayerGui.PAGES.CaptchaPage.Visible and dealine == 0 then
+                dealine = os.time() + 5
+            end
+            
             writeData('', 'In transaction')
         elseif currentTradesLimit <= TRADE_LIMIT_MIN then
             writeData('Completed', 'Transaction completed')
             return
         end
     else
-        if os.time() > deadline then
+        local holder = table_[LocalPlayer.Name]
+        
+        if game.PlaceId == TRADING_LOBBY_ID and sameServerWith(holder) then
+            if inventory.Items['Trait Crystal'] == 0 then
+                writeData('Completed', 'Transferred to ' .. holder)
+                return
+            else
+                writeData('', 'Trade to ' .. holder)
+            end
+        else
             writeData('Rejoin', '')
             return
-        end
-
-        local holder = table_[LocalPlayer.Name]
-
-        if inventory.Items['Trait Crystal'] == 0 then
-            writeData('Completed', 'Transferred to ' .. holder)
-            return
-        else
-            writeData('', 'Trade to ' .. holder)
         end
     end
     
