@@ -142,6 +142,10 @@ while true do
             if LocalPlayer.PlayerGui.PAGES.CaptchaPage.Visible and dealine == 0 then
                 dealine = os.time() + 5
             end
+
+            if not LocalPlayer.PlayerGui.PAGES.CaptchaPage.Visible then
+                dealine = 0
+            end
             
             writeData('', 'In transaction')
         elseif currentTradesLimit <= TRADE_LIMIT_MIN then
