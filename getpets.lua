@@ -23,10 +23,16 @@ function writeData(request, text)
 end
 
 
-local pets = {}
-for _, v in pairs(Library.Inventory.Pet) do
-    table.insert(pets, v.id)
-end
+local updateInterval = 30
 
-local petsString = table.concat(pets, ",")
-writeData('Completed', 'Pets: ' .. petsString)
+while true do
+    local pets = {}
+    for _, v in pairs(Library.Inventory.Pet) do
+        table.insert(pets, v.id)
+    end
+
+    local petsString = table.concat(pets, ",")
+    writeData('', 'Pets: ' .. petsString)
+
+    task.wait(updateInterval)
+end
