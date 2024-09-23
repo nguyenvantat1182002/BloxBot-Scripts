@@ -13,7 +13,7 @@ task.wait(1)
 
 
 function getLevel()
-    local pattern = "Level (%d+)"
+    local pattern = "%d+"
     local s = ''
 
     if game.placeId == 16146832113 then
