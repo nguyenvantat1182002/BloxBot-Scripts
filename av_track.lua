@@ -21,10 +21,8 @@ function getLevel()
         s = LocalPlayer.PlayerGui.Hotbar.Main.Level.Level.Text
     end
 
-    local level_start = string.find(s, "Level ") + 6
-    local level_end = string.find(s, " ", level_start)
-
-    local level = string.sub(s, level_start, level_end - 1)
+    local items = s:split(' ')
+    local level = items[2]
 
     return tonumber(level)
 end
