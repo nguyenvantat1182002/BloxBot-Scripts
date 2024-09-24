@@ -36,7 +36,9 @@ function WriteData(request, text)
 end
 
 local updateInterval = 30
-local maximumLevel = 30
+local maximumLevel = 50
+
+task.wait(10)
 
 while true do
     local level = getLevel()
