@@ -13,7 +13,6 @@ task.wait(1)
 
 
 function getLevel()
-    local pattern = "%d+"
     local s = ''
 
     if game.placeId == 16146832113 then
@@ -22,7 +21,11 @@ function getLevel()
         s = LocalPlayer.PlayerGui.Hotbar.Main.Level.Level.Text
     end
 
-    local level = string.match(s, pattern)
+    local level_start = string.find(s, "Level ") + 6
+    local level_end = string.find(s, " ", level_start)
+
+    local level = string.sub(s, level_start, level_end - 1)
+
     return tonumber(level)
 end
 
