@@ -12,19 +12,12 @@ end
 task.wait(1)
 
 
+function getGems()
+    return LocalPlayer:GetAttribute('Gems') or 0
+end
+
 function getLevel()
-    local s = ''
-
-    if game.placeId == 16146832113 then
-        s = LocalPlayer.PlayerGui.HUD.Main.Level.Level.Text
-    else
-        s = LocalPlayer.PlayerGui.Hotbar.Main.Level.Level.Text
-    end
-
-    local items = s:split(' ')
-    local level = items[2]
-
-    return tonumber(level)
+    return LocalPlayer:GetAttribute('Level') or 1
 end
 
 function WriteData(request, text)
@@ -36,15 +29,14 @@ function WriteData(request, text)
 end
 
 local updateInterval = 30
-local maximumLevel = 70
-
-task.wait(updateInterval)
+local target = 100000
 
 while true do
     local level = getLevel()
-    local s = 'Level: '..tostring(level)
+    local gems = getGems()
+    local s = 'Level: '..tostring(level)..', Gems: '..tostring(gems)
 
-    if level >= maximumLevel then
+    if gems >= target then
         WriteData('Completed', s)
         return
     end
