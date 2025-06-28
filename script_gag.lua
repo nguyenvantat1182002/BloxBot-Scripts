@@ -7,7 +7,7 @@ local GameEvents = ReplicatedStorage:WaitForChild("GameEvents")
 local BuyPetEgg = GameEvents:FindFirstChild("BuyPetEgg")
 local Sell_Inventory = GameEvents:FindFirstChild("Sell_Inventory")
 
-local fileName = player.Name .. '.txt'
+local fileName = LocalPlayer.Name .. '.txt'
 
 local function getCharacter()
 	return LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
