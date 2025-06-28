@@ -1,94 +1,187 @@
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+
+local GameEvents = ReplicatedStorage:WaitForChild("GameEvents")
+local BuyPetEgg = GameEvents:WaitForChild("BuyPetEgg")
+local Sell_Inventory = GameEvents:WaitForChild("Sell_Inventory")
+local PetEggService = GameEvents:WaitForChild("PetEggService")
+
+local EggLocations = workspace:WaitForChild("NPCS"):WaitForChild("Pet Stand"):WaitForChild("EggLocations")
 
 local LocalPlayer = Players.LocalPlayer
-local GameEvents = ReplicatedStorage:WaitForChild("GameEvents")
+local Backpack = LocalPlayer:WaitForChild("Backpack")
+local Leaderstats = LocalPlayer:WaitForChild("leaderstats")
+local Sheckles = Leaderstats:WaitForChild("Sheckles")
+local fileName = LocalPlayer.Name .. ".json"
 
-local PetEggService = GameEvents:FindFirstChild("PetEggService")
-local BuyPetEgg = GameEvents:FindFirstChild("BuyPetEgg")
-local Sell_Inventory = GameEvents:FindFirstChild("Sell_Inventory")
+local listEggs = {"Bug Egg", "Paradise Egg", "Mythical Egg", "Bee Egg"}
+
+local function writeData(request, text)
+	writefile(fileName, HttpService:JSONEncode({ Request = request, Text = text }))
+end
 
 local function getCharacter()
 	return LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 end
 
-local function getBackpack()
-	return LocalPlayer:WaitForChild("Backpack")
-end
-
-local function teleport(pos)
-	local char = getCharacter()
-	local root = char:FindFirstChild("HumanoidRootPart")
+local function Teleport(pos)
+	local root = getCharacter():FindFirstChild("HumanoidRootPart")
 	if root then
-		char:SetPrimaryPartCFrame(pos)
+		getCharacter():SetPrimaryPartCFrame(pos)
 	end
 end
 
-local function getOwnerFarm()
-	for _, farm in ipairs(workspace:WaitForChild("Farm"):GetChildren()) do
-		local owner = farm:FindFirstChild("Important") and
-		              farm.Important:FindFirstChild("Data") and
-		              farm.Important.Data:FindFirstChild("Owner")
+local function getPets()
+	local eggs = {}
+	for _, tool in ipairs(Backpack:GetChildren()) do
+		local name = tool.Name
+		if name:find("Egg") then
+			local eggName, qty = name:match("^(.-) x(%d+)$")
+			eggs[eggName or name] = tonumber(qty) or 1
+		end
+	end
+	return eggs
+end
 
-		if owner and owner.Value == LocalPlayer.Name then
-			return farm
+
+local function getStock()
+    local eggLines = {}
+
+	for _, egg in ipairs(EggLocations:GetChildren()) do
+		if egg:IsA("Model") then
+            table.insert(eggLines, egg.Name)
+		end
+	end
+
+    return eggLines
+end
+
+local function isInList(target, list)
+	for _, v in ipairs(list) do
+		if v == target then return true end
+	end
+	return false
+end
+
+local function getFarm()
+	local Farms = workspace:WaitForChild("Farm"):GetChildren()
+
+	for _, Farm in ipairs(Farms) do
+		local Important = Farm:FindFirstChild("Important")
+		local Data = Important:FindFirstChild("Data")
+		local Owner = Data:FindFirstChild("Owner").Value
+
+		if Owner == LocalPlayer.Name then
+			return Farm
 		end
 	end
 end
 
-local function getArea(base)
-	local pivot, size = base:GetPivot(), base.Size
-	return math.ceil(pivot.X - size.X / 2),
-	       math.ceil(pivot.Z - size.Z / 2),
-	       math.floor(pivot.X + size.X / 2),
-	       math.floor(pivot.Z + size.Z / 2)
+local function getRandomFarmPoint(locations)
+	local plots = locations:GetChildren()
+	if #plots == 0 then return Vector3.new(0, 4, 0) end
+
+	local plot = plots[math.random(#plots)]
+	local pivot, size = plot:GetPivot(), plot.Size
+	local x = math.random(math.ceil(pivot.X - size.X / 2), math.floor(pivot.X + size.X / 2))
+	local z = math.random(math.ceil(pivot.Z - size.Z / 2), math.floor(pivot.Z + size.Z / 2))
+	return Vector3.new(x, 4, z)
 end
 
-local function getRandomFarmPoint()
-	local farm = getOwnerFarm()
-	if not farm then return Vector3.new(0, 4, 0) end
+local function sellInventory()
+    local done = false
 
-	local locations = farm:FindFirstChild("Important") and farm.Important:FindFirstChild("Plant_Locations")
-	if not locations then return Vector3.new(0, 4, 0) end
+    local PreviousSheckles = tonumber(Sheckles.Value)
+    if PreviousSheckles > 10000 then
+        done = true
+    end
+    
+	while not done do
+		Teleport(CFrame.new(86, 4, 1))
+		Sell_Inventory:FireServer()
 
-	local lands = locations:GetChildren()
-	if #lands == 0 then return Vector3.new(0, 4, 0) end
-
-	local chosen = lands[math.random(1, #lands)]
-	local x1, z1, x2, z2 = getArea(chosen)
-	return Vector3.new(math.random(x1, x2), 4, math.random(z1, z2))
-end
-
-local function plantEggs()
-	local char = getCharacter()
-	for _ = 1, 10, 1 do
-		for _, tool in ipairs(getBackpack():GetChildren()) do
-			if tool.Name:find("Egg") then
-				tool.Parent = char
-				PetEggService:FireServer("CreateEgg", getRandomFarmPoint())
-			end
-		end
+        if PreviousSheckles < tonumber(Sheckles.Value) then
+            done = true
+        end
 	end
 end
 
 local function buyEggs()
-	for _ = 1, 10 do
-		for i = 1, 3 do
-			BuyPetEgg:FireServer(i)
-		end
-	end
+    local done = false
+    while not done do
+        local stock = getStock()
+
+        writeData("", "Dang Cho Mua Trung")
+
+        for _, eggName in ipairs(stock) do
+            if isInList(eggName, listEggs) then
+
+                writeData("", "Dang Mua Trung : " .. eggName)
+
+                for i = 1, 3 do 
+                    BuyPetEgg:FireServer(i) 
+                end
+                done = true
+            end
+        end
+        task.wait(5)
+    end
 end
 
-local function sellInventory()
-	teleport(CFrame.new(86, 4, 1))
-	Sell_Inventory:FireServer()
+local function getEggFarms()
+    local farm = getFarm()
+    local objects = farm.Important.Objects_Physical:GetChildren()
+
+    return farm, objects
 end
 
--- main task
-task.spawn(function()
-	sellInventory()
-	task.wait(0.5)
-	buyEggs()
-	task.wait(0.5)
-	plantEggs()
+local function hatchPets()
+    local farm, obj = getEggFarms()
+
+    -- hatch all pet time hatch = 0
+    if #obj > 0 then
+        for _, egg in ipairs(obj) do
+            if egg:GetAttribute("OBJECT_TYPE") == "PetEgg" and egg:GetAttribute("TimeToHatch") == 0 then
+                PetEggService:FireServer("HatchPet", egg)
+            end
+        end
+    end
+
+    task.wait(0.5)
+
+    -- plant all egg in list from inventory
+	local locations = farm.Important:FindFirstChild("Plant_Locations")
+    for _, name in ipairs(listEggs) do
+        for _, tool in ipairs(Backpack:GetChildren()) do
+            if tool.Name:find(name) then
+                tool.Parent = getCharacter()
+
+                task.wait(0.5)
+
+                for _ = 1, 3 do
+                    PetEggService:FireServer("CreateEgg", getRandomFarmPoint(locations))
+                end
+            end
+        end
+    end
+end
+
+task.spawn(function ()
+    local success, err = pcall(function ()
+        sellInventory()
+        task.wait(0.5)
+        
+        buyEggs()
+        task.wait(0.5)
+
+        hatchPets()
+        task.wait(2)
+
+        writeData("Completed", HttpService:JSONEncode(getPets()))
+    end)
+
+    if not success then
+        print("Error : " .. err)
+    end
 end)
