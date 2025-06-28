@@ -176,7 +176,7 @@ local function hatchPets()
         task.wait(1)
         
         for _, name in ipairs(Backpack:GetChildren()) do
-            local petName = name:match("^(.-)")
+            local petName, qty = name:match("^(.-) x(%d+)$")
             if isInList(petName, listPet) then
                 sendWH(LocalPlayer.Name, petName)
             end
