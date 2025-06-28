@@ -1,9 +1,4 @@
-if not config.webhookUrl then
-    local config = {
-        webhookUrl = 'https://discord.com/api/webhooks/1387432533645459537/gVvr4GxXYnnz7_MSUkm45XFlueAhsd4mNnmJWF2j97cKHtzhr9vc_R5ekSSvU_OfkLW0'
-    }
-end
-
+local config = _G.config
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
