@@ -16,6 +16,7 @@ local Sheckles = Leaderstats:WaitForChild("Sheckles")
 local fileName = LocalPlayer.Name .. ".json"
 
 local listEggs = {"Bug Egg", "Paradise Egg", "Mythical Egg", "Bee Egg"}
+local listPet = {"Red Fox", "Dragonfly", "Queen Bee", "Mimic Octopus"}
 
 local function writeData(request, text)
 	writefile(fileName, HttpService:JSONEncode({ Request = request, Text = text }))
@@ -32,6 +33,28 @@ local function Teleport(pos)
 	end
 end
 
+local function sendWH(title, description)
+	local embed = {
+		title = title,
+		description = description,
+		color = 0x00ff99
+	}
+
+	local payload = {
+		embeds = {embed}
+	}
+
+	local RequestData = {
+		Url = config.webhookUrl,
+		Method = "POST",
+		Headers = {
+			["Content-Type"] = "application/json"
+		},
+		Body = HttpService:JSONEncode(payload)
+	}
+	task.spawn(request, RequestData)
+end
+
 local function getPets()
 	local eggs = {}
 	for _, tool in ipairs(Backpack:GetChildren()) do
@@ -43,7 +66,6 @@ local function getPets()
 	end
 	return eggs
 end
-
 
 local function getStock()
     local eggLines = {}
@@ -144,6 +166,15 @@ local function hatchPets()
         for _, egg in ipairs(obj) do
             if egg:GetAttribute("OBJECT_TYPE") == "PetEgg" and egg:GetAttribute("TimeToHatch") == 0 then
                 PetEggService:FireServer("HatchPet", egg)
+            end
+        end
+
+        task.wait(1)
+        
+        for _, name in ipairs(Backpack:GetChildren()) do
+            local petName = name:match("^(.-)")
+            if isInList(petName, listPet) then
+                sendWH(LocalPlayer.Name, petName)
             end
         end
     end
