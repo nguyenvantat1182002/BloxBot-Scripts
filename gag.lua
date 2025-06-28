@@ -1,3 +1,9 @@
+if not config.webhookUrl then
+    local config = {
+        webhookUrl = 'https://discord.com/api/webhooks/1387432533645459537/gVvr4GxXYnnz7_MSUkm45XFlueAhsd4mNnmJWF2j97cKHtzhr9vc_R5ekSSvU_OfkLW0'
+    }
+end
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
@@ -142,7 +148,7 @@ local function buyEggs()
                 writeData("", "Dang Mua Trung : " .. eggName)
 
                 for i = 1, 3 do 
-                    BuyPetEgg:FireServer(i) 
+                    BuyPetEgg:FireServer(i)
                 end
                 done = true
             end
@@ -172,7 +178,7 @@ local function hatchPets()
         task.wait(1)
         
         for _, name in ipairs(Backpack:GetChildren()) do
-            local petName = name:match("^(.-)")
+            local petName, qty = name:match("^(.-) x(%d+)$")
             if isInList(petName, listPet) then
                 sendWH(LocalPlayer.Name, petName)
             end
