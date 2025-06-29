@@ -216,6 +216,9 @@ task.spawn(function ()
         buyEggs()
         task.wait(0.5)
 
+	hatchPets()
+        task.wait(0.5)
+
         sendDiscord()
         task.wait(0.5)
 
