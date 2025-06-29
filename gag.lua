@@ -173,9 +173,11 @@ local function hatchPets()
         task.wait(1)
         
         for _, name in ipairs(Backpack:GetChildren()) do
-            local petName, qty = name:match("^(.-) x(%d+)$")
+            local petName = name:match("^(.-)")
             if isInList(petName, listPet) then
                 sendWH(LocalPlayer.Name, petName)
+
+		task.wait(5)
             end
         end
     end
@@ -203,12 +205,12 @@ task.spawn(function ()
     local success, err = pcall(function ()
         sellInventory()
         task.wait(0.5)
-        
+
+	hatchPets()
+        task.wait(0.5)
+				
         buyEggs()
         task.wait(0.5)
-
-        hatchPets()
-        task.wait(2)
 
         writeData("Completed", HttpService:JSONEncode(getPets()))
     end)
