@@ -147,7 +147,8 @@ local function buyEggs()
                 for i = 1, 3 do 
                     BuyPetEgg:FireServer(i)
                 end
-                
+
+		done = true
 		break
             end
         end
