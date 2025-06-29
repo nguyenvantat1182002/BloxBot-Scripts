@@ -135,6 +135,8 @@ local function buyEggs()
     while not done do
         local stock = getStock()
 
+	print(HttpService:JSONEncode(stock))
+			
         writeData("", "Dang Cho Mua Trung")
 
         for _, eggName in ipairs(stock) do
