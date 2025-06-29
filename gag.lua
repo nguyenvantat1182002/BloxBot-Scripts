@@ -216,7 +216,7 @@ task.spawn(function ()
         buyEggs()
         task.wait(0.5)
 
-        writeData("Completed", HttpService:JSONEncode(getPets()))
+        writeData("RunAgain", HttpService:JSONEncode(getPets()))
     end)
 
     if not success then
