@@ -1,3 +1,5 @@
+repeat wait() until game:IsLoaded()
+
 local config = _G.config
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
@@ -34,6 +36,22 @@ local function Teleport(pos)
 	end
 end
 
+local function sellInventory()
+    local PreviousSheckles = tonumber(Sheckles.Value)
+    if PreviousSheckles > 10000 then
+        return true
+    end
+    
+	while wait(10) do
+		Teleport(CFrame.new(86, 4, 1))
+		Sell_Inventory:FireServer()
+
+        if PreviousSheckles < tonumber(Sheckles.Value) then
+            return true
+        end
+	end
+end
+
 local function sendWH(title, description)
 	local embed = {
 		title = title,
@@ -56,8 +74,9 @@ local function sendWH(title, description)
 	task.spawn(request, RequestData)
 end
 
-local function getPets()
+local function getEggs()
 	local eggs = {}
+
 	for _, tool in ipairs(Backpack:GetChildren()) do
 		local name = tool.Name
 		if name:find("Egg") then
@@ -65,26 +84,8 @@ local function getPets()
 			eggs[eggName or name] = tonumber(qty) or 1
 		end
 	end
+
 	return eggs
-end
-
-local function getStock()
-    local eggLines = {}
-
-	for _, egg in ipairs(EggLocations:GetChildren()) do
-		if egg:IsA("Model") then
-            table.insert(eggLines, egg.Name)
-		end
-	end
-
-    return eggLines
-end
-
-local function isInList(target, list)
-	for _, v in ipairs(list) do
-		if v == target then return true end
-	end
-	return false
 end
 
 local function getFarm()
@@ -112,47 +113,44 @@ local function getRandomFarmPoint(locations)
 	return Vector3.new(x, 4, z)
 end
 
-local function sellInventory()
-    local done = false
+local function getStock()
+    local eggLines = {}
 
-    local PreviousSheckles = tonumber(Sheckles.Value)
-    if PreviousSheckles > 10000 then
-        done = true
-    end
-    
-	while not done do
-		Teleport(CFrame.new(86, 4, 1))
-		Sell_Inventory:FireServer()
-
-        if PreviousSheckles < tonumber(Sheckles.Value) then
-            done = true
-        end
+	for _, egg in ipairs(EggLocations:GetChildren()) do
+		if egg:IsA("Model") then
+            table.insert(eggLines, egg.Name)
+		end
 	end
+
+    return eggLines
+end
+
+local function isInList(target, list)
+	for _, v in ipairs(list) do
+		if v == target then return true end
+	end
+    
+	return false
 end
 
 local function buyEggs()
-    local done = false
-    while not done do
-        local stock = getStock()
+    while wait(10) do
+        writeData("", "Wait Stock")
 
-	print(HttpService:JSONEncode(stock))
-			
-        writeData("", "Dang Cho Mua Trung")
+        local stock = getStock()
 
         for _, eggName in ipairs(stock) do
             if isInList(eggName, listEggs) then
 
-                writeData("", "Dang Mua Trung : " .. eggName)
+                writeData("", "Buying : " .. eggName)
 
                 for i = 1, 3 do 
                     BuyPetEgg:FireServer(i)
                 end
 
-		done = true
-		break
+                return true
             end
         end
-        task.wait(5)
     end
 end
 
@@ -161,6 +159,18 @@ local function getEggFarms()
     local objects = farm.Important.Objects_Physical:GetChildren()
 
     return farm, objects
+end
+
+local function sendDiscord()
+    for _, tool in ipairs(Backpack:GetChildren()) do
+		local name = tool.Name
+		local petName = name:match("^(.-)")
+		if isInList(petName, listPet) then
+		    sendWH(LocalPlayer.Name, petName)
+
+		    task.wait(0.5)
+        end
+	end
 end
 
 local function hatchPets()
@@ -172,18 +182,7 @@ local function hatchPets()
             if egg:GetAttribute("OBJECT_TYPE") == "PetEgg" and egg:GetAttribute("TimeToHatch") == 0 then
                 PetEggService:FireServer("HatchPet", egg)
             end
-        end
-
-        task.wait(1)
-        
-        for _, tool in ipairs(Backpack:GetChildren()) do
-	    local name = tool.Name
-            local petName = name:match("^(.-)")
-            if isInList(petName, listPet) then
-                sendWH(LocalPlayer.Name, petName)
-
-		task.wait(5)
-            end
+            task.wait(0.5)
         end
     end
 
@@ -211,16 +210,20 @@ task.spawn(function ()
         sellInventory()
         task.wait(0.5)
 				
+        hatchPets()
+        task.wait(0.5)
+
         buyEggs()
         task.wait(0.5)
 
-	hatchPets()
+        sendDiscord()
         task.wait(0.5)
 
-        writeData("RunAgain", HttpService:JSONEncode(getPets()))
+        writeData("RunAgain", HttpService:JSONEncode(getEggs()))
     end)
 
     if not success then
         print("Error : " .. err)
+        writeData("", err)
     end
 end)
