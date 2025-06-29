@@ -210,11 +210,11 @@ task.spawn(function ()
     local success, err = pcall(function ()
         sellInventory()
         task.wait(0.5)
-
-	hatchPets()
-        task.wait(0.5)
 				
         buyEggs()
+        task.wait(0.5)
+
+	hatchPets()
         task.wait(0.5)
 
         writeData("RunAgain", HttpService:JSONEncode(getPets()))
